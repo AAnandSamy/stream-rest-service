@@ -7,9 +7,5 @@ import java.util.List;
 
 @Repository
 public interface ETLValCriteriaRepo extends CrudRepository<ETLValCriteria, String> {
-
     List<ETLValCriteria> findAll();
-
-
-
 }

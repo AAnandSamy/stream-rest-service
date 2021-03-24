@@ -5,5 +5,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ETLValResultSetRepo extends CrudRepository<ETLValResult, Long> {
-
 }
