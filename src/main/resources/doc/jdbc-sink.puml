@@ -1,0 +1,12 @@
+@startmindmap
+*[#B3B3B3] Client(REST/Curl)
+**[#FFDAB9] Sender
+***[#FFDAB9] Kafka
+**[#FFDAB9] Validator
+***[#FFDAB9] Kafka-txn
+ ****[#FFC300] YB
+ ****[#FFC300] H2
+    *****[#FFC300] H2
+
+
+@endmindmap
