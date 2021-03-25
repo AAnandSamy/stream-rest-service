@@ -18,7 +18,7 @@ public class AppProperties {
 
     private String jdbc_url;
     private String jdbc_usr;
-    private String Jdbc_pwd;
+    private String jdbc_pwd;
 
 
     public String getSchema_registry_url() {
@@ -118,10 +118,10 @@ public class AppProperties {
     }
 
     public String getJdbc_pwd() {
-        return Jdbc_pwd;
+        return jdbc_pwd;
     }
 
     public void setJdbc_pwd(String jdbc_pwd) {
-        Jdbc_pwd = jdbc_pwd;
+        this.jdbc_pwd = jdbc_pwd;
     }
 }
