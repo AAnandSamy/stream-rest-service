@@ -74,22 +74,6 @@ public class KafkaConfigUtils {
         return kprops;
     }
 
-/*    public static Properties kProducerConf4AVRO(AppProperties props){
-        Properties kprops = new Properties();
-        kprops.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, props.getKafka_bootstrap_servers());
-        kprops.put(ProducerConfig.ACKS_CONFIG, "all");
-        kprops.put(ProducerConfig.RETRIES_CONFIG, 0);
-        kprops.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
-        kprops.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
-        kprops.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG , props.getKafka_security_protocol());
-        kprops.put(TRUSTSTORE_LOC,props.getKafka_ssl_truststore_location());
-        kprops.put(TRUSTSTORE_PWD ,props.getKafka_ssl_truststore_password());
-        kprops.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, props.getSchema_registry_url());
-        kprops.put("auto.register.schemas", props.isAuto_register_schemas());
-        return  kprops;
-    }*/
-
-
     public static Response sendMsg2KafkaJSON(AppProperties appProps, Properties props, List<CoreTransaction> txns) {
         KafkaProducer producer = new KafkaProducer(props);
         List<String> roids = new ArrayList();
@@ -354,7 +338,7 @@ public class KafkaConfigUtils {
                 Connection hiveCon = DBUtils.getYbConnection(appProps);
                 // goto sleep until ETL complete
                 Thread.sleep(reqVal.getDelays() * 1000);
-                JSONArray dscAry = DBUtils.getHiveResultSet(hiveCon, inSql);
+                JSONArray dscAry = DBUtils.JsonRS(hiveCon, inSql);
 
                 if (x2j.optJSONArray("result") != null) {
                     JSONArray srcAry = x2j.optJSONArray("result");
@@ -435,7 +419,7 @@ public class KafkaConfigUtils {
 
         Thread.sleep(delays * 1000);
         //  Open YB connection
-        Connection hiveCon = DBUtils.getYbConnection(appProps);
+        Connection conn = DBUtils.getYbConnection(appProps);
 
         for (ReqValidateModel rsMdl : reqMdls) {
             JSONArray valResultAry = null;
@@ -447,7 +431,8 @@ public class KafkaConfigUtils {
             String mSql = rsMdl.getSql() + MSTR_WR_FIlter;
             inSql = String.format(mSql, clnDt, clnId, oid);
             JSONObject x2j = XML.toJSONObject(rsMdl.getExp_rs_XML()).getJSONObject("resultset");
-            JSONArray dscAry = DBUtils.getHiveResultSet(hiveCon, inSql);
+            JSONArray dscAry = DBUtils.JsonRS(conn, inSql);
+
 
             if (x2j.optJSONArray("result") != null) {
                 JSONArray srcAry = x2j.optJSONArray("result");
@@ -477,7 +462,7 @@ public class KafkaConfigUtils {
             etlRsRepo.saveAll(oprs);
             totalTest = totalTest + oprs.size();
         }
-        hiveCon.close();
+        conn.close();
         rsNd.put("totalCriteria", totalCriters);
         rsNd.put("totalTests", totalTest);
         rsNd.put("message", "All the test results are saved into 'TEST_RESULTS' ");

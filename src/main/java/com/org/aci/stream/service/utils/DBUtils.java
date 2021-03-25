@@ -2,10 +2,7 @@ package com.org.aci.stream.service.utils;
 
 import com.org.aci.stream.service.constants.AppProperties;
 
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,34 +13,23 @@ public class DBUtils {
 
     public static final Logger logger = LoggerFactory.getLogger(DBUtils.class);
 
-    public static Connection getYbConnection(AppProperties appProps) throws Exception {
-        // load the driver
-        Class.forName("org.apache.hive.jdbc.HiveDriver");
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection(appProps.getJdbc_url());
-            logger.info("connected with hive server");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return con;
+    public static Connection getYbConnection(AppProperties appProps) throws SQLException {
+        return DriverManager.getConnection(appProps.getJdbc_url(),appProps.getJdbc_usr(),appProps.getJdbc_pwd());
     }
 
     /**
      * Get Hive result set as JSON
      *
      * @param con
-     * @param hql
+     * @param sql
      * @return JSON Datats
      * @throws Exception
      */
-    public static JSONArray getHiveResultSet(Connection con, String hql) throws Exception {
+    public static JSONArray JsonRS(Connection con, String sql) throws Exception {
         JSONArray jResults = new JSONArray();
-
-        logger.info("hql : {}", hql);
+        logger.info("sql : {}", sql);
         Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery(hql);
+        ResultSet rs = stmt.executeQuery(sql);
         int total_rows = rs.getMetaData().getColumnCount();
         while (rs.next()) {
             JSONObject jResult = new JSONObject();
@@ -52,8 +38,6 @@ public class DBUtils {
             }
             jResults.put(jResult);
         }
-        //logger.info("jResults : {}",jResults.toString());
-
         return jResults;
     }
 

@@ -17,7 +17,7 @@ public class AppConstant {
     public static final String SENDER ="ws/msg/sender";
     public static final String VALIDATOR ="ws/msg/validator";
 
-    public static final String HIVE_DATA ="ws/data/hive";
+    public static final String YB_DATA ="ws/data/yb";
     public static final String H2_DATA ="ws/data/h2";
 
     public static final String MATCHED ="passed";
